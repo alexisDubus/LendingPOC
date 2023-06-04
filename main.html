@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>LendingPOC</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">Lending Estimation</a></li>
+			<li><a href="#">About Us</a></li>
+			<li><a href="#">Contact Us</a></li>
+		</ul>
+	</nav>
+	<main>
+		<h1>Welcome to LendingPOC</h1>
+		<p>Estimate the impact of lending:</p>
+		<form id="lending-form">
+			<label for="loan-amount">Loan Amount:</label>
+			<input type="number" id="loan-amount" required>
+			<label for="loan-rate">Interest Rate:</label>
+			<input type="number" id="loan-rate" required>
+			<label for="loan-years">Years to Repay:</label>
+			<input type="number" id="loan-years" required>
+			<button type="submit" id="calculate-btn">Calculate</button>
+		</form>
+		<div id="result"></div>
+	</main>
+	<footer>
+		<p>&copy; 2023 LendingPOC</p>
+	</footer>
+	<script src="script.js"></script>
+</body>
+</html>
+
+<script>
+    const form = document.querySelector('#lending-form');
+    const loanAmount = document.querySelector('#loan-amount');
+    const loanRate = document.querySelector('#loan-rate');
+    const loanYears = document.querySelector('#loan-years');
+    const resultDiv = document.querySelector('#result');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const amount = parseFloat(loanAmount.value);
+        const rate = parseFloat(loanRate.value);
+        const years = parseInt(loanYears.value);
+
+        const monthlyPayment = calculateMonthlyPayment(amount, rate, years);
+        const totalPayment = monthlyPayment * years * 12;
+        const totalInterest = totalPayment - amount;
+
+        resultDiv.innerHTML = `
+            <h2>Estimation Results:</h2>
+            <p>Monthly Payment: $${monthlyPayment.toFixed(2)}</p>
+            <p>Total Payment: $${totalPayment.toFixed(2)}</p>
+            <p>Total Interest: $${totalInterest.toFixed(2)}</p>
+        `;
+    });
+
+    function calculateMonthlyPayment(amount, rate, years) {
+        const monthlyRate = rate / 1200; // 12 months per year, 100% to percentage, and divide by 12
+        const months = years * 12;
+        const monthlyPayment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+
+        return monthlyPayment;
+    }
+</script>
